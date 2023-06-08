@@ -1,0 +1,7 @@
+{% include "unfold/forms/helpers/toolbar.html" %}
+
+<input type="hidden" name="{{ widget.name }}" id="wysiwyg-{{ widget.name }}"{% if widget.value != None %} value="{{ widget.value }}"{% endif %}>
+
+<div class="max-w-4xl relative">
+    <trix-editor input="wysiwyg-{{ widget.name }}" {% include "django/forms/widgets/attrs.html" %}></trix-editor>
+</div>

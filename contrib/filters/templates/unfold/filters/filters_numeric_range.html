@@ -1,0 +1,11 @@
+{% load i18n %}
+
+{% with choices.0 as choice %}
+    <div class="flex flex-col mb-6">
+        <h3 class="font-medium mb-4 text-sm">{% blocktrans with filter_title=title %}By {{ filter_title }}{% endblocktrans %}</h3>
+
+        <div class="flex flex-row space-x-4">
+            {{ choice.form.as_p }}
+        </div>
+    </div>
+{% endwith %}

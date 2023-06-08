@@ -1,0 +1,82 @@
+{% load i18n %}
+
+{% if sidebar_navigation %}
+    <div class="overflow-auto">
+        {% for group in sidebar_navigation %}
+            {% if group.separator %}
+                <hr class="border-t border-gray-200 mx-6 my-2 dark:border-gray-800" />
+            {% endif %}
+
+            {% if group.title %}
+                <h3 class="font-medium my-3 px-6 text-gray-900 text-sm first:mt-0 dark:text-gray-200">
+                    {{ group.title }}
+                </h3>
+            {% endif %}
+
+            <ol class="px-6">
+                {% for item in group.items %}
+                    <li>
+                        <a href="{{ item.link }}"
+                           class="border border-transparent flex h-11 items-center -mx-3 px-3 py-2 rounded-md {% if item.active %}bg-gray-100 font-semibold text-primary-600 dark:border dark:border-gray-800 dark:bg-white/[.02] dark:text-primary-500{% else %}text-gray-500 hover:text-gray-700 dark:text-gray-400 hover:dark:text-gray-200{% endif %}">
+                            {% if item.icon %}
+                                <span class="material-symbols-outlined md-18 mr-3 w-4.5">
+                                    {{ item.icon }}
+                                </span>
+                            {% endif %}
+
+                            <span class="text-sm">
+                                {{ item.title|safe }}
+                            </span>
+
+                            {% if item.badge %}
+                                <span class="bg-red-600 font-semibold ml-2 px-1 rounded-sm text-xs text-white">
+                                    {{ item.badge|safe }}
+                                </span>
+                            {% endif %}
+                        </a>
+                    </li>
+                {% endfor %}
+            </ol>
+        {% endfor %}
+    </div>
+
+    {% if sidebar_show_all_applications %}
+        <label for="show-applications" class="cursor-pointer flex items-center mt-auto px-6 py-3 text-gray-500 text-sm transition-all hover:text-gray-700 dark:text-gray-400 hover:dark:text-gray-200">
+            <span class="material-symbols-outlined md-18 mr-3">
+                apps
+            </span>
+
+            <span>
+                {% trans "All applications" %}
+            </span>
+        </label>
+
+        <input type="checkbox" id="show-applications" class="hidden peer" />
+
+        <div class="absolute bottom-0 hidden left-72 right-0 top-0 z-50 peer-checked:block">
+            <label class="absolute bg-gray-900 bg-opacity-80 backdrop-blur-sm bottom-0 left-0 right-0 top-0 z-10 w-screen" for="show-applications"></label>
+
+            <div class="bg-white flex flex-col h-full overflow-x-hidden overflow-y-auto py-5 px-8 relative text-sm w-80 z-20 dark:bg-gray-900 dark:border-r dark:border-gray-800" data-simplebar>
+                {% for app in app_list %}
+                    <div class="mb-6 last:mb-0">
+                        <h3 class="mb-4 font-medium overflow-hidden text-ellipsis text-gray-700 whitespace-nowrap dark:text-gray-200">
+                            {{ app.name }}
+                        </h3>
+
+                        <ul>
+                            {% for model in app.models %}
+                                <li class="block mb-4 last:mb-0">
+                                    <a href="{{ model.admin_url }}" class="block overflow-hidden text-ellipsis text-gray-500 transition-all whitespace-nowrap hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
+                                        {{ model.name }}
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+{% else %}
+    <p>{% translate "You don’t have permission to view or edit anything." %}</p>
+{% endif %}

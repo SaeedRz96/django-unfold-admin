@@ -1,0 +1,72 @@
+{% load i18n static unfold %}
+
+{% get_current_language as LANGUAGE_CODE %}
+{% get_current_language_bidi as LANGUAGE_BIDI %}
+
+{% capture as branding silent %}{% block branding %}{% endblock %}{% endcapture %}
+{% capture as pretitle silent %}{% block pretitle %}{% endblock %}{% endcapture %}
+{% capture as content_title silent %}{% block content_title %}{% if title %}{{ title }}{% endif %}{% endblock %}{% endcapture %}
+{% capture as content_subtitle silent %}{% block content_subtitle %}{% if subtitle %}{{ subtitle }}{% endif %}{% endblock %}{% endcapture %}
+{% capture as nav_global silent %}{% block nav-global %}{% endblock %}{% endcapture %}
+{% capture as nav_global_side silent %}{% block nav-global-side %}{% endblock %}{% endcapture %}
+{% capture as actions_items silent %}{% block actions-items %}{% endblock %}{% endcapture %}
+
+<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE|default:"en-us" }}" dir="{{ LANGUAGE_BIDI|yesno:"rtl,ltr,auto" }}" x-data="{ adminTheme: $persist('auto').as('adminTheme') }" x-bind:class="adminTheme && adminTheme" x-cloak>
+
+<head>
+    <title>{% block title %}{% endblock %}</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,500,0,0" rel="stylesheet"/>
+
+    {% for style in styles %}
+        <link href="{{ style }}" rel="stylesheet">
+    {% endfor %}
+
+    <link href="{% static 'unfold/css/styles.css' %}" rel="stylesheet">
+    <link href="{% static 'unfold/css/simplebar.css' %}" rel="stylesheet">
+
+    <script src="{% static 'unfold/js/simplebar.js' %}"></script>
+    <script src="{% static 'unfold/js/alpine.persist.js' %}" defer></script>
+    <script src="{% static 'unfold/js/alpine.js' %}" defer></script>
+    <script src="{% static 'unfold/js/htmx.js' %}"></script>
+
+    {% for script in scripts %}
+        <script src="{{ script }}"></script>
+    {% endfor %}
+
+    {% block extrastyle %}{% endblock %}
+
+    {% block extrahead %}{% endblock %}
+
+    <script src="{% static 'unfold/js/app.js' %}"></script>
+
+    {% block responsive %}
+        <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    {% endblock %}
+
+    {% block blockbots %}
+        <meta name="robots" content="NONE,NOARCHIVE">
+    {% endblock %}
+
+    {% if colors %}
+        <style>
+            html {
+                {% for name, weights in colors.items %}
+                    {% for weight, value in weights.items %}
+                        --color-{{ name }}-{{ weight }}: {{ value }};
+                    {% endfor %}
+                {% endfor %}
+            }
+        </style>
+    {% endif %}
+</head>
+
+<body class="antialiased bg-white font-sans text-gray-500 dark:bg-gray-900 dark:text-gray-400 {% if is_popup %}popup {% endif %}{% block bodyclass %}{% endblock %}" data-admin-utc-offset="{% now "Z" %}" x-data="{ sidebarMobileOpen: false, sidebarDesktopOpen: {% if request.session.toggle_sidebar == False %}false{% else %}true{% endif %} }">
+    {% block base %}{% endblock %}
+
+    <div id="modal-overlay" class="backdrop-blur-sm bg-opacity-80 bg-gray-900 bottom-0 fixed hidden left-0 mr-1 right-0 top-0 z-50"></div>
+</body>
+
+</html>

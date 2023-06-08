@@ -1,0 +1,68 @@
+{% load i18n admin_urls %}
+
+<div class="js-inline-admin-formset inline-group" id="{{ inline_admin_formset.formset.prefix }}-group" data-inline-type="stacked" data-inline-formset="{{ inline_admin_formset.inline_formset_data }}">
+    <fieldset class="module {{ inline_admin_formset.classes }}">
+        <h2 class="bg-gray-100 border border-transparent font-semibold mb-6 px-4 py-3 rounded-md text-gray-900 text-sm lg:-mx-4 dark:bg-white/[.02] dark:border dark:border-gray-800 dark:text-gray-200">
+            {% if inline_admin_formset.formset.max_num == 1 %}
+                {{ inline_admin_formset.opts.verbose_name|capfirst }}
+            {% else %}
+                {{ inline_admin_formset.opts.verbose_name_plural|capfirst }}
+            {% endif %}
+        </h2>
+
+        {{ inline_admin_formset.formset.management_form }}
+        {{ inline_admin_formset.formset.non_form_errors }}
+
+        <div class="border border-gray-200 mb-6 overflow-hidden rounded-md shadow-sm text-gray-700 w-full dark:border-gray-800">
+            {% for inline_admin_form in inline_admin_formset %}
+                <div class="inline-related group inline-stacked {% if inline_admin_form.original or inline_admin_form.show_url %} has_original{% endif %}{% if forloop.last and inline_admin_formset.has_add_permission %} empty-form last-related{% endif %}" id="{{ inline_admin_formset.formset.prefix }}-{% if not forloop.last %}{{ forloop.counter0 }}{% else %}empty{% endif %}">
+                    <h3 class="border-b {% if not forloop.first %}border-t{% endif %} border-gray-200 flex font-medium items-center mb-3 px-3 py-2 text-gray-400 text-sm dark:border-gray-800">
+                        <span class="mr-2">
+                            {{ inline_admin_formset.opts.verbose_name|capfirst }}:
+                        </span>
+
+                        <span class="inline_label font-semibold text-gray-900">
+                            {% if inline_admin_form.original and inline_admin_form.model_admin.show_change_link and inline_admin_form.model_admin.has_registered_model %}
+                                <a href="{% url inline_admin_form.model_admin.opts|admin_urlname:'change' inline_admin_form.original.pk|admin_urlquote %}" class="{% if inline_admin_formset.has_change_permission %}inlinechangelink{% else %}inlineviewlink{% endif %} ml-1">
+                                    {{ inline_admin_form.original }}
+                                </a>
+                            {% else %}
+                                {% if inline_admin_form.original %}
+                                    {{ inline_admin_form.original }}
+                                {% else %}
+                                    #{{ forloop.counter }}
+                                {% endif %}
+                            {% endif %}
+                        </span>
+
+                        {% if inline_admin_form.show_url %}
+                            <a href="{{ inline_admin_form.absolute_url }}" class="h-4 leading-none ml-1">
+                                <span class="material-symbols-outlined h-4 md-16 text-gray-400">launch</span>
+                            </a>
+                        {% endif %}
+
+                        {% if inline_admin_formset.formset.can_delete and inline_admin_formset.has_delete_permission and inline_admin_form.original %}
+                            <span class="delete flex items-center ml-auto text-gray-500">
+                                {{ inline_admin_form.deletion_field.field }} {{ inline_admin_form.deletion_field.label_tag }}
+                            </span>
+                        {% endif %}
+                    </h3>
+
+                    {% include "unfold/helpers/messages/error.html" with errors=inline_admin_form.form.non_field_errors %}
+
+                    {% for fieldset in inline_admin_form %}
+                        <div class="px-3 -mb-5">
+                            {% include 'admin/includes/fieldset.html' %}
+                        </div>
+                    {% endfor %}
+
+                    {% if inline_admin_form.needs_explicit_pk_field %}
+                        {{ inline_admin_form.pk_field.field }}
+                    {% endif %}
+
+                    {% if inline_admin_form.fk_field %}{{ inline_admin_form.fk_field.field }}{% endif %}
+                </div>
+            {% endfor %}
+        </div>
+    </fieldset>
+</div>

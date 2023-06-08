@@ -1,0 +1,89 @@
+{% extends 'unfold/layouts/skeleton.html' %}
+
+{% load i18n static %}
+
+{% block extrastyle %}
+    {{ block.super }}
+    {{ form.media }}
+{% endblock %}
+
+{% block bodyclass %}{{ block.super }}bg-gray-50 login dark:bg-gray-900{% endblock %}
+
+{% block usertools %}{% endblock %}
+
+{% block nav-global %}{% endblock %}
+
+{% block nav-sidebar %}{% endblock %}
+
+{% block content_title %}{% endblock %}
+
+{% block breadcrumbs %}{% endblock %}
+
+{% block title %}
+    {{ title }} | {{ site_title }}
+{% endblock %}
+
+{% block base %}
+    <div class="flex min-h-screen">
+        <div class="flex flex-grow items-center justify-center mx-auto px-4">
+            <div class="w-full sm:w-96">
+                <h1 class="font-semibold mb-10">
+                    <span class="block text-gray-700 dark:text-gray-200">{% trans 'پنل مدیریت' %}</span>
+                    <span class="block text-primary-600 text-xl">{{ site_title }}</span>
+                </h1>
+
+                {% include "unfold/helpers/messages/errornote.html" with errors=form.errors %}
+
+                {% include "unfold/helpers/messages/error.html" with errors=form.non_field_errors %}
+
+                {% if user.is_authenticated %}
+                    {% blocktranslate trimmed asvar message %}
+                        You are authenticated as {{ username }}, but are not authorized to
+                        access this page. Would you like to login to a different account?
+                    {% endblocktranslate %}
+
+                    {% include "unfold/helpers/messages/error.html" with error=message %}
+                {% endif %}
+
+                <form action="{{ app_path }}" method="post" id="login-form">
+                    {% csrf_token %}
+
+                    {% include "unfold/helpers/field.html" with field=form.username %}
+
+                    {% include "unfold/helpers/field.html" with field=form.password %}
+
+                    {% url 'admin_password_reset' as password_reset_url %}
+
+                    {% if password_reset_url %}
+                        <div class="password-reset-link">
+                            <a href="{{ password_reset_url }}">
+                                {% translate 'Forgotten your password or username?' %}
+                            </a>
+                        </div>
+                    {% endif %}
+
+                    <div class="submit-row">
+                        <button type="submit" class="bg-primary-600 border border-transparent flex flex-row font-semibold group items-center justify-center py-2 rounded-md text-sm text-white w-full">
+                            {% translate 'Log in' %}
+
+                            <i class="material-symbols-outlined ml-2 relative right-0 text-lg transition-all group-hover:-right-1">arrow_left</i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            {% if site_url %}
+                <div class="absolute left-0 ml-4 mt-4 top-0">
+                    <a href="{{ site_url }}" class="flex font-medium items-center text-sm text-primary-600">
+                        <span class="material-symbols-outlined mr-2">arrow_back</span> {% trans 'Return to site' %}
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+
+        {% if image %}
+            <div class="bg-cover flex-grow hidden max-w-3xl xl:max-w-4xl xl:block" style="background-image: url('{{ image }}')">
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}
