@@ -13,7 +13,7 @@ setup(
     url='https://github.com/SaeedRz96/django-unfold-admin',
     author='Saeed Ramazani',
     author_email='saeedramezani75@gmail.com',
-    description='This is the django unfold admin package',
+    description='RTL Unfold Django Admin Panel Theme',
     long_description=long_description,
     long_description_content_type='text/markdown', 
     packages=find_packages(),  
