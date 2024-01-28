@@ -9,11 +9,11 @@ This project is forked from https://github.com/unfoldadmin/django-unfold with RT
 
 ## How to install?
 1.using pip to install package
-
-    pip install django-unfold-admin
-
+```bash
+pip install django-unfold-admin
+```
 2.add `unfold` to *settings.py* `INSTALLED_APPS`:
-
+```python
     # settings.py
     INSTALLED_APPS = [
         "unfold",  # before django.contrib.admin
@@ -22,9 +22,11 @@ This project is forked from https://github.com/unfoldadmin/django-unfold with RT
         .
         .
     ]
+```
+
 
 3.now you can use `ModelAdmin` class defined in `unfold.admin` in *admin.py* :
-
+```python
     # admin.py
     
     from django.contrib import admin
@@ -33,6 +35,7 @@ This project is forked from https://github.com/unfoldadmin/django-unfold with RT
     @admin.register(MyModel)
     class CustomAdminClass(ModelAdmin):
         pass
+```
 
 thats that! 
 
